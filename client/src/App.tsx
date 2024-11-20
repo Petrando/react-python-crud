@@ -43,10 +43,22 @@ function App() {
         body: JSON.stringify(bookData),
       });
 
-      const data = await response.json();
-      await fetchBooks()
+      const data = await response.json();      
+      setBooks((prev) => [...prev, data]);
       setTitle("")
       setReleaseYear(0)
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const deleteBook = async (pk: number) => {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/books/${pk}`, {
+        method: "DELETE",
+      });
+
+      setBooks((prev) => prev.filter((book) => book.id !== pk));
     } catch (err) {
       console.log(err);
     }
@@ -84,7 +96,7 @@ function App() {
           <button onClick={() => {}}>
             Change Title
           </button>
-          <button onClick={() => {}}> Delete</button>
+          <button onClick={() => {deleteBook(book.id)}}> Delete</button>
         </div>
       ))}
     </>
