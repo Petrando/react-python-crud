@@ -44,7 +44,7 @@ function App() {
       });
 
       const data = await response.json();
-      setBooks((prev) => [...prev, {...data, id: prev.length + 1}]);
+      await fetchBooks()
       setTitle("")
       setReleaseYear(0)
     } catch (err) {
