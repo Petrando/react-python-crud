@@ -76,6 +76,7 @@ function App() {
           }
         })
       );
+      
       setNewTitle("")
     } catch (err) {
       console.log(err);
