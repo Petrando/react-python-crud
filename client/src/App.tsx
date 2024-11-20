@@ -29,6 +29,29 @@ function App() {
     }
   };
 
+  const addBook = async () => {
+    const bookData = {
+      title,
+      release_year: releaseYear,
+    };
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/books/create/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bookData),
+      });
+
+      const data = await response.json();
+      setBooks((prev) => [...prev, {...data, id: prev.length + 1}]);
+      setTitle("")
+      setReleaseYear(0)
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <>
       <h1>Book Website</h1>
@@ -43,7 +66,11 @@ function App() {
           placeholder="Release Year..."
           onChange={(e) => {setReleaseYear(parseInt(e.target.value))}}
         />
-        <button onClick={()=>{}}> Add Book </button>
+        <button onClick={addBook}
+          disabled={title === "" || releaseYear <= 0}  
+        > 
+          Add Book 
+        </button>
       </div>
       {books.map((book) => (
         <div key={book.id}>
