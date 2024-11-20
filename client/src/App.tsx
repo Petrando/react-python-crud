@@ -52,6 +52,36 @@ function App() {
     }
   };
 
+  const updateTitle = async (pk: number, release_year: number) => {
+    const bookData = {
+      title: newTitle,
+      release_year,
+    };
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/books/${pk}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bookData),
+      });
+
+      const data = await response.json();
+      setBooks((prev) =>
+        prev.map((book) => {
+          if (book.id === pk) {
+            return data;
+          } else {
+            return book;
+          }
+        })
+      );
+      setNewTitle("")
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const deleteBook = async (pk: number) => {
     try {
       const response = await fetch(`http://127.0.0.1:8000/api/books/${pk}`, {
@@ -90,10 +120,12 @@ function App() {
           <p>Release Year: {book.release_year} </p>
           <input
             type="text"
-            placeholder="New Title..."
-            onChange={(e) => setNewTitle(e.target.value)}
+            placeholder={`New Title for ${book.title}`}
+            onChange={(e) => { setNewTitle(e.target.value) }}
+            onFocus={()=>{if(newTitle === ""){ setNewTitle(book.title)}}}
+            onBlur={()=>{if(newTitle === book.title){setNewTitle("")}}}
           />
-          <button onClick={() => {}}>
+          <button onClick={() => { updateTitle(book.id, book.release_year)}}>
             Change Title
           </button>
           <button onClick={() => {deleteBook(book.id)}}> Delete</button>
